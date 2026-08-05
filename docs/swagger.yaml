@@ -1,0 +1,214 @@
+basePath: /
+definitions:
+  model.Click:
+    properties:
+      clicked_at:
+        type: string
+      id:
+        type: integer
+      ip_address:
+        type: string
+      referrer:
+        type: string
+      url_id:
+        type: integer
+      user_agent:
+        type: string
+    type: object
+  model.ErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  model.ShortenRequest:
+    properties:
+      custom_slug:
+        type: string
+      expires_in:
+        type: string
+      url:
+        type: string
+    required:
+    - expires_in
+    - url
+    type: object
+  model.ShortenResponse:
+    properties:
+      expires_at:
+        type: string
+      original_url:
+        type: string
+      short_url:
+        type: string
+      slug:
+        type: string
+    type: object
+  model.StatsResponse:
+    properties:
+      click_count:
+        type: integer
+      created_at:
+        type: string
+      original_url:
+        type: string
+      recent_clicks:
+        items:
+          $ref: '#/definitions/model.Click'
+        type: array
+      slug:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: galanjabal3@gmail.com
+    name: Galan Jabal
+    url: https://github.com/galanjabal3
+  description: A simple, fast URL shortener API built with Go + Gin + PostgreSQL.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Linkas API
+  version: "1.0"
+paths:
+  /{slug}:
+    get:
+      description: Redirect short URL to original destination
+      parameters:
+      - description: Short URL slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "301":
+          description: Moved Permanently
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Redirect to original URL
+      tags:
+      - urls
+  /api/{slug}:
+    delete:
+      description: Delete a short URL by slug
+      parameters:
+      - description: Short URL slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Delete short URL
+      tags:
+      - urls
+  /api/health:
+    get:
+      description: Check if the API is running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - system
+  /api/qrcode/{slug}:
+    get:
+      description: Generate QR code image for a short URL
+      parameters:
+      - description: Short URL slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - image/png
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get QR Code
+      tags:
+      - urls
+  /api/shorten:
+    post:
+      consumes:
+      - application/json
+      description: Create a new short URL from a long URL
+      parameters:
+      - description: URL to shorten
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.ShortenRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.ShortenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Shorten URL
+      tags:
+      - urls
+  /api/stats/{slug}:
+    get:
+      description: Get click statistics for a short URL
+      parameters:
+      - description: Short URL slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.StatsResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get URL statistics
+      tags:
+      - urls
+swagger: "2.0"
