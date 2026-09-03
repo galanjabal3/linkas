@@ -4,12 +4,12 @@
 A simple, fast URL shortener API built with Go + Gin + PostgreSQL.
 
 ## Tech Stack
-- **Language:** Go 1.22+
+- **Language:** Go 1.26+
 - **Framework:** Gin
 - **Database:** PostgreSQL
 - **ORM:** sqlx (lightweight, close to raw SQL)
-- **Migration:** golang-migrate
-- **Testing:** testify
+- **Migration:** Custom migration runner (`cmd/migrate/main.go`)
+- **Testing:** Go stdlib testing
 
 ## Features
 - [x] POST /api/shorten — Create short URL

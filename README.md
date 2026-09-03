@@ -15,7 +15,7 @@ A simple, fast URL shortener API built with Go + Gin + PostgreSQL.
 
 ## Tech Stack
 
-- Go 1.22+
+- Go 1.26+
 - Gin (HTTP framework)
 - PostgreSQL (database)
 - sqlx (database toolkit)

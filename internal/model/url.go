@@ -23,7 +23,7 @@ type Click struct {
 type ShortenRequest struct {
 	URL        string `json:"url" binding:"required,url"`
 	CustomSlug string `json:"custom_slug,omitempty"`
-	ExpiresIn  string `json:"expires_in" binding:"required"`
+	ExpiresIn  string `json:"expires_in,omitempty"`
 }
 
 type ShortenResponse struct {
